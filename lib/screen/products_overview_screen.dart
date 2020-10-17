@@ -1,10 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:shop/util/DUMMY_DATA.dart';
 import 'package:shop/util/screen_size_config.dart';
-import 'package:shop/widget/product_item_widget.dart';
+import 'package:shop/widget/products_grid.dart';
 
-class ProductsOverviewScreen extends StatelessWidget {
+enum FilterOptions {
+  Favorites,
+  All,
+}
+
+class ProductsOverviewScreen extends StatefulWidget {
   //CONSIST OF PRODUCT ITEM WIDGET AS A BUILDING BLOCK
+
+  @override
+  _ProductsOverviewScreenState createState() => _ProductsOverviewScreenState();
+}
+
+class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
+  var _showOnlyFavorites = false;
 
   @override
   Widget build(BuildContext context) {
@@ -35,31 +46,38 @@ class ProductsOverviewScreen extends StatelessWidget {
     // );
     return Scaffold(
       appBar: AppBar(
+        actions: <Widget>[
+          PopupMenuButton(
+            onSelected: (FilterOptions selectedValue) {
+              setState(() {
+                if (selectedValue == FilterOptions.Favorites) {
+                  _showOnlyFavorites = true;
+                } else {
+                  _showOnlyFavorites = false;
+                }
+              });
+            },
+            icon: Icon(
+              Icons.more_vert,
+            ),
+            itemBuilder: (_) => [
+              PopupMenuItem(
+                child: Text('Only Favorites'),
+                value: FilterOptions.Favorites,
+              ),
+              PopupMenuItem(
+                child: Text('Show All'),
+                value: FilterOptions.All,
+              ),
+            ],
+          ),
+        ],
         title: Text(
           "My Shop",
           style: Theme.of(context).textTheme.headline6,
         ),
       ),
-      body: GridView.builder(
-        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 3 / 2,
-          crossAxisSpacing: ScreenSizeConfig.blockSizeHorizontal * 3,
-          mainAxisSpacing: ScreenSizeConfig.blockSizeVertical * 3,
-        ),
-        itemBuilder: (context, index) => ProductItemWidget(
-          loadedProducts[index].id,
-          loadedProducts[index].title,
-          loadedProducts[index].imageUrl,
-        ),
-        itemCount: loadedProducts.length,
-        padding: EdgeInsets.fromLTRB(
-          ScreenSizeConfig.blockSizeHorizontal * 3,
-          ScreenSizeConfig.blockSizeHorizontal * 3,
-          ScreenSizeConfig.blockSizeHorizontal * 3,
-          ScreenSizeConfig.blockSizeHorizontal * 3,
-        ),
-      ),
+      body: ProductsGrid(_showOnlyFavorites),
     );
   }
 }
