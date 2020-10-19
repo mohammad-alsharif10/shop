@@ -15,8 +15,7 @@ class ProductItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final SingleProductProvider singleProductProvider =
-        Provider.of<SingleProductProvider>(context);
+    // final singleProductProvider = Provider.of<SingleProductProvider>(context);
     final cart = Provider.of<CartProvider>(context, listen: false);
     return Consumer<SingleProductProvider>(
       builder: (context, value, child) => ClipRRect(
@@ -50,8 +49,23 @@ class ProductItemWidget extends StatelessWidget {
               icon: Icon(
                 Icons.shopping_cart,
               ),
-              onPressed: () => cart.addItem(singleProductProvider.id,
-                  singleProductProvider.price, singleProductProvider.title),
+              onPressed: () {
+                cart.addItem(value.id, value.price, value.title);
+                // Scaffold.of(context).openDrawer();
+                Scaffold.of(context).hideCurrentSnackBar();
+                Scaffold.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text("Added Item To The Cart"),
+                    duration: Duration(seconds: 2),
+                    action: SnackBarAction(
+                      onPressed: () {
+                        cart.removeSingleQuantity(value.id);
+                      },
+                      label: "UNDO",
+                    ),
+                  ),
+                );
+              },
               color: Theme.of(context).accentColor,
             ),
           ),

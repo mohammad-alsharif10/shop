@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:shop/provider/cart_provider.dart';
 import 'package:shop/screen/cart_screen.dart';
 import 'package:shop/util/screen_size_config.dart';
+import 'package:shop/widget/app_drawer.dart';
 import 'package:shop/widget/badge.dart';
 import 'package:shop/widget/products_grid.dart';
 
@@ -92,6 +93,7 @@ class _ProductsOverviewScreenState extends State<ProductsOverviewScreen> {
           style: Theme.of(context).textTheme.headline6,
         ),
       ),
+      drawer: AppDrawer(),
       body: ProductsGrid(_showOnlyFavorites),
     );
   }
